@@ -1,0 +1,134 @@
+{% if messages %}
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <script>
+    // Define icons for different message types
+    let icon = { 
+      success: '<span class="material-symbols-outlined">task_alt</span>', 
+      danger: '<span class="material-symbols-outlined">error</span>', 
+      warning: '<span class="material-symbols-outlined">warning</span>', 
+      info: '<span class="material-symbols-outlined">info</span>',
+    };
+  
+    // Function to show toast notification
+    const showToast = (message = "Sample Message", toastType = "info", duration = 5000) => {
+      // Default to info if the toastType is invalid
+      if (!Object.keys(icon).includes(toastType)) toastType = "info";
+  
+      // Create a toast container
+      let box = document.createElement("div");
+      box.classList.add("toast", `toast-${toastType}`);
+      box.innerHTML = `
+        <div class="toast-content-wrapper">
+          <div class="toast-icon">${icon[toastType]}</div>
+          <div class="toast-message">${message}</div>
+          <div class="toast-progress"></div>
+        </div>`;
+
+      // Set the progress bar duration
+      box.querySelector(".toast-progress").style.animationDuration = `${duration / 1000}s`;
+  
+      // Remove existing toast if it exists
+      let toastAlready = document.body.querySelector(".toast");
+      if (toastAlready) {
+        toastAlready.remove();
+      }
+  
+      // Append new toast to the container
+      document.getElementById('toast-container').appendChild(box);
+  
+      // Remove the toast after the specified duration
+      setTimeout(() => {
+        box.remove();
+      }, duration);
+    };
+
+    // Iterate through Django messages and show toasts
+    {% for message in messages %}
+      showToast("{{ message }}", "{{ message.tags }}");
+    {% endfor %}
+  </script>
+{% endif %}
+
+<style>
+	#toast-container {
+		position: fixed;
+		bottom: 20px;
+		right: 20px;
+		z-index: 9999;
+		max-width: 300px;
+	  }
+	  
+	  .toast {
+		background-color: #333;
+		color: #fff;
+		border-radius: 5px;
+		padding: 15px;
+		margin: 10px 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		animation: toast-animation 0.5s ease-out forwards;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	  }
+	  
+	  .toast-content-wrapper {
+		display: flex;
+		align-items: center;
+	  }
+	  
+	  .toast-icon {
+		margin-right: 10px;
+	  }
+	  
+	  .toast-message {
+		flex: 1;
+	  }
+	  
+	  .toast-progress {
+		width: 100%;
+		height: 3px;
+		background-color: rgba(255, 255, 255, 0.3);
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		animation: progress-bar 5s linear forwards;
+	  }
+	  
+	  .toast-success {
+		background-color: #28a745;
+	  }
+	  
+	  .toast-danger {
+		background-color: #dc3545;
+	  }
+	  
+	  .toast-warning {
+		background-color: #ffc107;
+	  }
+	  
+	  .toast-info {
+		background-color: #17a2b8;
+	  }
+	  
+	  @keyframes toast-animation {
+		from {
+		  opacity: 0;
+		  transform: translateY(10px);
+		}
+		to {
+		  opacity: 1;
+		  transform: translateY(0);
+		}
+	  }
+	  
+	  @keyframes progress-bar {
+		from {
+		  width: 0;
+		}
+		to {
+		  width: 100%;
+		}
+	  }
+</style>	  

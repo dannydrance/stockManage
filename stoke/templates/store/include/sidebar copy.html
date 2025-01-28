@@ -1,0 +1,65 @@
+{% load static %}
+    <!-- Sidbar ================================================== -->
+    <!--{{product}}{{categories}}-->
+    
+    <div id="sidebar" class="span3">
+      {% if user.is_authenticated %}
+        <div class="well well-small"><a id="myCart" href=""><img src="{% static "resource/images/ico/ico-cart.png" %}" alt="cart">{{cartNumber}} Item in your cart<span class="badge badge-warning pull-right"><small>{{TotalPrice|floatformat:'0'}} RWF</small></span></a></div>
+        {% else %}
+        <div class="well well-small" style="text-align:center;"><a id="myCart" href=""><img src="{% static "resource/images/ico/ico-cart.png" %}" alt="cart">For Shop With Us, Please LogIn Or <span><a href="" style="color: blue;"><strong>Contact Us</strong></a></span></h5><span class="badge badge-warning pull-right hidden">$155.00</span></a></div>
+      {% endif %}
+        <ul id="sideManu closed" class="nav nav-tabs nav-stacked">
+        <div class="well well-small"><a id="myCart"><h5 style="text-align:center;">CATEGORY & SUB-CATEGORY </h5><span class="badge btn-primary pull-right"></span></a></div>
+          {% for category in sub_cate %} 
+            <li class="subMenu closed"><a> {{category.category}} [{{ category.category_count }}] </a>
+              <ul>
+                {% for sub in category.sub_category %}
+                <!--<li><a class="active" href="{% url "search" %}"><i class="icon-chevron-right"></i> {{ sub.name }} ({{sub.count}}) </a></li>-->
+                <li>
+                  <a href="#" class="button-link" onclick="event.preventDefault(); submitFormWithAdditionalValue('{{ sub.name }}', '{{ sub.count }}');">
+                    <i class="icon-chevron-right"></i> {{ sub.name }} ({{ sub.count }})
+                  </a>
+                </li>
+                <form id="searchForm" action="" method="POST" style="display: none;">
+                  {% csrf_token %}
+                  <input type="hidden" name="searchBox" id="searchBox">
+                </form>
+                
+                <script>
+                  function submitFormWithAdditionalValue(name, count) {
+                    // Set the search item value
+                    document.getElementById('searchBox').value = name;
+                    
+                    // Submit the form
+                    document.getElementById('searchForm').submit();
+                  }
+                </script>
+                <!--<li><a href="#"><i class="icon-chevron-right"></i>Computers, Tablets & laptop (30)</a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i>Mobile Phone (80)</a></li>
+                <li><a href="#"><i class="icon-chevron-right"></i>Sound & Vision (15)</a></li>-->
+            {% endfor %}
+              </ul>
+            </li>
+            {% endfor %}
+        </ul>
+        <br/>
+        <div class="thumbnail">
+            <img src="{% static "resource/images/product/2.webp" %}" title="Camera" alt="Product Image"/>
+            <div class="caption">
+            <h5> Camera & NVR </h5>
+            </div>
+        </div><br/>
+            <div class="thumbnail">
+                <img src="{% static "resource/images/product/7.gif" %}" title="Walkthrough" alt="Walkthrough">
+                <div class="caption">
+                <h5>Walkthrough Metal Detector</h5>
+                </div>
+            </div><br/>
+            <div class="thumbnail">
+                <img src="{% static "resource/images/payment/payment_methods.png" %}" title="Payment Methods" alt="Payments Methods">
+                <div class="caption">
+                <h5>Payment Methods</h5>
+                </div>
+            </div>
+    </div>
+<!-- Sidebar end=============================================== -->
