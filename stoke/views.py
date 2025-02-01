@@ -164,7 +164,7 @@ def handle(request):
         if request.method == "GET":
             rfid_id1 = request.GET.get('rfid_id')
             print("Received RFID ID:", rfid_id1)  # Check what we receive
-            rfid_id1 = 235723546
+            rfid_id1 = 435723546
             if not rfid_id1:
                 # If no rfid_id is received, ask the user to try again
                 return JsonResponse({'error': 'No RFID ID provided'}, status=400)
