@@ -17,6 +17,7 @@
 
         <!-- Search Bar (Inline) -->
         <form class="form-inline navbar-search" method="post" action="#" style="display: flex; align-items: center; margin-left: 20px; margin-right: 20px;"> <!-- Flexbox for inline elements -->
+          {% csrf_token %}
           <input id="srchFld" class="srchTxt" type="text" placeholder="Search..." style="border-radius: 25px; padding: 10px; margin-right: 10px; border: 1px solid #ddd; width: 200px;">
           <select class="srchTxt" style="border-radius: 25px; padding: 10px; margin-right: 10px; border: 1px solid #ddd;">
             <option>All</option>
@@ -123,11 +124,11 @@
             <div class="col-md-6">
               <div class="form-group" style="margin-right: 2px;">
                 <label for="productDate">Date Of Expired</label>
-                <input type="date" id="product_expired" name="product_expired" class="form-control" required>
+                <input type="date" id="product_expired" name="product_expired" class="form-control">
               </div>
             </div>            
           </div>
-          <button type="submit" class="btn btn-success w-100" style="background-color: #27ae60;">Add Product</button>
+          <button type="submit" class="btn btn-success w-100" style="background-color:rgb(34, 95, 60);">Add Product</button>
         </form>
       </div>
     </div>
@@ -154,7 +155,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-group" style="margin-right: 2px;">
-                <input type="Date" id="removeProductExpired" name="product_expired" placeholder="Date Of Expired" class="form-control" required >
+                <input type="text" id="removeDeviceID" name="deviceID" placeholder="Product ID" class="form-control" required>
+                <!---<input type="Date" id="removeProductExpired" name="product_expired" placeholder="Date Of Expired" class="form-control" hidden>--->
               </div>
             </div>
           </div>
@@ -171,6 +173,7 @@
 <script>
   // Function to open the form based on the backend response
   function handleRFIDResponse(data) {
+   //alert(data.rfid_id);
       // Check if any modal is currently open
       var isModalOpen = $('#add').hasClass('show') || $('#remove').hasClass('show');
   
@@ -179,6 +182,7 @@
               // Product found - open the Remove Product modal
               $('#removeDeviceName').val(data.deviceName);
               $('#removeProductExpired').val(data.product_expired);
+              $('#removeDeviceID').val(data.rfid_id);
               $('#removeQuantity').val('');  // You may want to calculate/assign the quantity if needed
               $('#remove').modal('show');
           } else {
@@ -191,16 +195,20 @@
       }
   }
   
+  function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
   // Function to make an AJAX request to the backend with the RFID ID
   function checkRFID(rfid_id) {
       $.ajax({
           url: '/get_product_details/',  // This is the URL for your backend view
           method: 'GET',
-          data: {
-              rfid_id: rfid_id
-          },
+          data: { rfid_id: rfid_id },
+          headers: { "X-CSRFToken": getCSRFToken() },  // Include CSRF token
           success: function(response) {
-              alert(response)
+              // Handle the response from the server
+              //alert(response);
               handleRFIDResponse(response);
           },
           error: function(xhr, status, error) {
@@ -209,9 +217,7 @@
           }
       });
   }
-  
-  setInterval(function() {ready();}, 5000);
-  
+
   // Function to capture RFID from the URL and make an AJAX request
   function captureRFID() {
       // Send request to the server (the backend will give the URL)
@@ -226,8 +232,9 @@
               var urlParams = new URLSearchParams(new URL(url).search);
               var rfid_id = urlParams.get('rfid_id');
               //console.log('Captured RFID ID:', rfid_id);  // Debugging
-  
+
               // If rfid_id exists, proceed to check it
+              //alert(rfid_id)
               if (rfid_id != 'None') {
                   checkRFID(rfid_id);  // Call the function to check the RFID
               } else {
@@ -236,14 +243,17 @@
               }
           },
           error: function(xhr, status, error) {
+              console.error('Error:', error);
               return;
           }
       });
   }
   
-  // Periodic calling of the captureRFID function every 5 seconds
-  setInterval(captureRFID, 20000);
-  </script>
+  $(document).ready(function() {
+      // Call captureRFID periodically or when required (for example, every 5 seconds)
+      setInterval(captureRFID, 5000); // Adjust the interval as needed
+  });
+</script>
   
 
 <style>

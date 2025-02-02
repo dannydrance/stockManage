@@ -49,7 +49,9 @@ def home(request):
     category = request.GET.get('cateSelect', 'All')
     if category != 'All':
         products = products.filter(category=category)  # Filter by category
-    
+    #elif category == 'All':
+        #products = Product.objects.all()  # Query all products 
+
     # Handle search filter
     search_term = request.GET.get('searchBox', '')
     if search_term:
@@ -64,7 +66,9 @@ def home(request):
             products = products.order_by('-product_number')  # Sort by product_number (descending)
         elif sort_by == 'Expired Date':
             products = products.order_by('expired_on')  # Sort by expired date (ascending)
-
+        #elif sort_by == 'Sort By':
+            #products = Product.objects.all()  # Query all products
+            
     # Calculate days left for each product
     for product in products:
         if product.expired_on:
@@ -132,25 +136,30 @@ def remove_product(request):
     if request.method == 'POST':
         # Get the form data
         product_name = request.POST.get('deviceName')
+        card_id = request.POST.get('deviceID')
         quantity_to_remove = int(request.POST.get('number'))  # Convert to int for comparison
         expiration_date = request.POST.get('product_expired')
 
         # Get the product to be removed
-        product = get_object_or_404(Product, name=product_name, expired_on=expiration_date)
+        product = get_object_or_404(Product, name=product_name, card_id=card_id)
 
-        # Check if the quantity to remove is valid
-        if quantity_to_remove > product.product_number:
-            # If the quantity to remove is greater than what's in stock, return an error message
-            messages.error(request, f"Error: Stock is low. Only {product.product_number} available.")
-        elif quantity_to_remove < product.product_number:
-            # If the quantity to remove is less than the stock, subtract it from the stock
-            product.product_number -= quantity_to_remove
-            product.save()
-            messages.success(request, f"{quantity_to_remove} of {product_name} removed successfully!")
-        else:  # If the quantity to remove is exactly equal to the stock
-            # Delete the product if the quantity is exactly the same
-            product.delete()
-            messages.success(request, f"All of {product_name} removed successfully!")
+        if product:
+
+            # Check if the quantity to remove is valid
+            if quantity_to_remove > product.product_number:
+                # If the quantity to remove is greater than what's in stock, return an error message
+                messages.error(request, f"Error: Stock is low. Only {product.product_number} available.")
+            elif quantity_to_remove < product.product_number:
+                # If the quantity to remove is less than the stock, subtract it from the stock
+                product.product_number -= quantity_to_remove
+                product.save()
+                messages.success(request, f"{quantity_to_remove} of {product_name} removed successfully!")
+            else:  # If the quantity to remove is exactly equal to the stock
+                # Delete the product if the quantity is exactly the same
+                product.delete()
+                messages.success(request, f"All of {product_name} removed successfully!")
+        else:
+            messages.error(request, f"No roduct of this ID: {product.card_id}")
 
         # Redirect back to the store page or wherever needed
         return redirect('home')  # Make sure you update this with the correct URL name
@@ -158,27 +167,36 @@ def remove_product(request):
         return render(request, 'store/index.html', {'title': 'Remove Product'})
 
 #========================================================================================================#
-rfid_id = ''
+rfid_id = None
 def handle(request):
+    global rfid_id  # Reference the global variable
     try:
         if request.method == "GET":
             rfid_id1 = request.GET.get('rfid_id')
             print("Received RFID ID:", rfid_id1)  # Check what we receive
-            rfid_id1 = 435723546
-            if not rfid_id1:
+            
+            #rfid_id1 = '5EC7DE6B'
+
+            if (rfid_id1):
+                rfid_id = rfid_id1
+
+            elif rfid_id:
+                try:
+                    # Convert rfid_id1 to an integer
+                    rfid_id = int(rfid_id,16)
+                    print("Received RFID ID1:", rfid_id)  # Check what we receive
+                except ValueError:
+                    return JsonResponse({'error': 'Invalid RFID ID format. It must be an integer.'}, status=400)
+
+                # Dynamically create the URL for the product details
+                print("Received RFID:", rfid_id)  # Check what we receive
+                esp_url = f"http://192.168.8.101:8000/get_product_details/?rfid_id={rfid_id}"
+                print("Generated URL:", esp_url)
+                return JsonResponse({'url': esp_url})
+            
+            else:
                 # If no rfid_id is received, ask the user to try again
                 return JsonResponse({'error': 'No RFID ID provided'}, status=400)
-
-            try:
-                # Convert rfid_id1 to an integer
-                rfid_id = int(rfid_id1)
-            except ValueError:
-                return JsonResponse({'error': 'Invalid RFID ID format. It must be an integer.'}, status=400)
-
-            # Dynamically create the URL for the product details
-            esp_url = f"http://192.168.8.101:8000/get_product_details/?rfid_id={rfid_id}"
-            print("Generated URL:", esp_url)
-            return JsonResponse({'url': esp_url})
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
@@ -194,14 +212,19 @@ def get_product_details(request):
             if not rfid_id:
                 return JsonResponse({"error": "No RFID ID provided"}, status=400)
 
+            #product = Product.objects.filter(card_id=rfid_id).first()
             product = Product.objects.filter(card_id=rfid_id).first()
 
             if product:
+                print("Product Exit", product.name,product.card_id,product.expired_on)
                 return JsonResponse({
                     "exists": True,
                     "message": "Product found. Show Remove Product form.",
+                    "rfid_id": product.card_id,
                     "deviceName": product.name,
-                    "product_expired": product.expired_on.strftime("%Y-%m-%d"),
+                    "product_expired": product.expired_on,
+                    #"product_expired": product.expired_on.strftime("%Y-%m-%d") if product.expired_on else "N/A",
+                    
                 })
             else:
                 return JsonResponse({

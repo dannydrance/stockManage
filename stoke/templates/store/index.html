@@ -185,23 +185,23 @@
           <div class="btn-group">
             <p class="btn">Category</p>
             <select id="cateSelect" name="cateSelect" class="form-control text-center">
-              <option>All</option>
-              <option value="Bakery">Bakery</option>
-              <option value="Dairy">Dairy</option>
-              <option value="Meat">Meat</option>
-              <option value="Seafood">Seafood</option>
-              <option value="Canned goods">Canned goods</option>
-              <option value="Beverages">Beverages</option>
+              <option value="All" {% if category == 'All' %}selected{% endif %}>All</option>
+              <option value="Bakery" {% if category == 'Bakery' %}selected{% endif %}>Bakery</option>
+              <option value="Dairy" {% if category == 'Dairy' %}selected{% endif %}>Dairy</option>
+              <option value="Meat" {% if category == 'Meat' %}selected{% endif %}>Meat</option>
+              <option value="Seafood" {% if category == 'Seafood' %}selected{% endif %}>Seafood</option>
+              <option value="Canned goods" {% if category == 'Canned goods' %}selected{% endif %}>Canned goods</option>
+              <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
             </select>
-
+      
             <select id="sortSelect" name="sortSelect" class="form-control text-center">
-              <option>Sort By</option>
-              <option value="Name">Name</option>
-              <option value="Size">Size</option>
-              <option value="Expired Date">Expired Date</option>
+              <option value="Sort By" {% if sort_by == 'Sort By' %}selected{% endif %}>Sort By</option>
+              <option value="Name" {% if sort_by == 'Name' %}selected{% endif %}>Name</option>
+              <option value="Size" {% if sort_by == 'Size' %}selected{% endif %}>Size</option>
+              <option value="Expired Date" {% if sort_by == 'Expired Date' %}selected{% endif %}>Expired Date</option>
             </select>
-
-            <input id="searchBox" name="searchBox" class="form-control" type="text" placeholder="Search..." />
+      
+            <input id="searchBox" name="searchBox" class="form-control" type="text" placeholder="Search..." value="{{ search_term }}" />
           </div>
         </form>
       </div>
