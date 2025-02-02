@@ -179,6 +179,8 @@ def handle(request):
 
             if (rfid_id1):
                 rfid_id = rfid_id1
+                esp_url = f"http://192.168.8.101:8000/get_product_details/?rfid_id={rfid_id1}"
+                return JsonResponse({'url': esp_url})
 
             elif rfid_id:
                 try:
