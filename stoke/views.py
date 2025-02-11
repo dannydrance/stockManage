@@ -23,8 +23,10 @@ def login_view(request):
         else:
             if not username or not password:
                 messages.error(request, "Please provide both email and password.")
+                return redirect('home')
             else:
                 messages.error(request, "Invalid username or password. Please try again.")
+                return redirect('home')
 
     return render(request, 'store/index.html', {'title': 'Login'})
 #========================================================================================================#
