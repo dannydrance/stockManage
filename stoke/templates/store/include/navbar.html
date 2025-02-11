@@ -1,4 +1,5 @@
 {% load static %}
+
 <!-------------------------------- Navbar -------------------------------->
 <div id="header">
   <div class="container">
@@ -156,7 +157,6 @@
             <div class="col-md-6">
               <div class="form-group" style="margin-right: 2px;">
                 <input type="text" id="removeDeviceID" name="deviceID" placeholder="Product ID" class="form-control" required>
-                <!---<input type="Date" id="removeProductExpired" name="product_expired" placeholder="Date Of Expired" class="form-control" hidden>---->
               </div>
             </div>
           </div>
@@ -252,25 +252,4 @@
     setInterval(captureRFID, 5000); // Adjust the interval as needed
   });
 </script>
-  
 
-<style>
-  /* Ensure responsiveness for smaller screens */
-  @media (max-width: 768px) {
-    .navbar-inner {
-      flex-direction: column;
-      text-align: center;
-    }
-    .navbar-search {
-      flex-direction: column;
-    }
-    .navbar-inner .nav {
-      display: block;
-    }
-  }
-
-  .btn:hover {
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    transform: scale(1.05);
-  }
-</style>
