@@ -1,5 +1,4 @@
 {% load static %}
-
 <!-------------------------------- Navbar -------------------------------->
 <div id="header">
   <div class="container">
@@ -157,6 +156,7 @@
             <div class="col-md-6">
               <div class="form-group" style="margin-right: 2px;">
                 <input type="text" id="removeDeviceID" name="deviceID" placeholder="Product ID" class="form-control" required>
+                <!---<input type="Date" id="removeProductExpired" name="product_expired" placeholder="Date Of Expired" class="form-control" hidden>--->
               </div>
             </div>
           </div>
@@ -171,84 +171,108 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script>
-  // Function to check if the user is logged in (based on the presence of the 'user' variable in Django template)
-  function isUserLoggedIn() {
-    return {% if user.is_authenticated %} true {% else %} false {% endif %};
-  }
-
   // Function to open the form based on the backend response
   function handleRFIDResponse(data) {
-    // Check if the user is logged in
-    if (!isUserLoggedIn()) {
-        // If not logged in, show login modal
-        $('#login').modal('show');
-        return;
-    }
-
-    // Check if any modal is currently open
-    var isModalOpen = $('#add').hasClass('show') || $('#remove').hasClass('show');
-
-    if (!isModalOpen) {
-        if (data.exists) {
-            // Product found - open the Remove Product modal
-            $('#removeDeviceName').val(data.deviceName);
-            $('#removeProductExpired').val(data.product_expired);
-            $('#removeDeviceID').val(data.rfid_id);
-            $('#removeQuantity').val('');  // You may want to calculate/assign the quantity if needed
-            $('#remove').modal('show');
-        } else {
-            // Product not found - open the Add Product modal
-            $('#addDeviceID').val(data.rfid_id);
-            $('#add').modal('show');
-        }
-    } else {
-        alert('A modal is already open, skipping modal open.');
-    }
+   //alert(data.rfid_id);
+      // Check if any modal is currently open
+      var isModalOpen = $('#add').hasClass('show') || $('#remove').hasClass('show');
+  
+      if (!isModalOpen) {
+          if (data.exists) {
+              // Product found - open the Remove Product modal
+              $('#removeDeviceName').val(data.deviceName);
+              $('#removeProductExpired').val(data.product_expired);
+              $('#removeDeviceID').val(data.rfid_id);
+              $('#removeQuantity').val('');  // You may want to calculate/assign the quantity if needed
+              $('#remove').modal('show');
+          } else {
+              // Product not found - open the Add Product modal
+              $('#addDeviceID').val(data.rfid_id);
+              $('#add').modal('show');
+          }
+      } else {
+          alert('A modal is already open, skipping modal open.');
+      }
   }
   
+  function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
   // Function to make an AJAX request to the backend with the RFID ID
   function checkRFID(rfid_id) {
-    $.ajax({
-        url: '/get_product_details/',  // This is the URL for your backend view
-        method: 'GET',
-        data: { rfid_id: rfid_id },
-        headers: { "X-CSRFToken": getCSRFToken() },  // Include CSRF token
-        success: function(response) {
-            // Handle the response from the server
-            handleRFIDResponse(response);
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            alert('There was an issue with the request.');
-        }
-    });
+      $.ajax({
+          url: '/get_product_details/',  // This is the URL for your backend view
+          method: 'GET',
+          data: { rfid_id: rfid_id },
+          headers: { "X-CSRFToken": getCSRFToken() },  // Include CSRF token
+          success: function(response) {
+              // Handle the response from the server
+              //alert(response);
+              handleRFIDResponse(response);
+          },
+          error: function(xhr, status, error) {
+              console.error('Error:', error);
+              alert('There was an issue with the request.');
+          }
+      });
   }
 
   // Function to capture RFID from the URL and make an AJAX request
   function captureRFID() {
-    $.ajax({
-        url: '/handle/',  // This is the backend route that gives the URL
-        method: 'GET',
-        success: function(response) {
-            var url = response.url;  // Assuming the server sends the URL containing 'rfid_id'
-            var urlParams = new URLSearchParams(new URL(url).search);
-            var rfid_id = urlParams.get('rfid_id');
-            if (rfid_id != 'None') {
-                checkRFID(rfid_id);  // Call the function to check the RFID
-            } else {
-                alert('No RFID ID found in the request URL.');
-                console.error('No RFID ID found in the URL.');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            return;
-        }
-    });
-  }
+      // Send request to the server (the backend will give the URL)
+      $.ajax({
+          url: '/handle/',  // This is the backend route that gives the URL
+          method: 'GET',
+          success: function(response) {
+              // Extract the URL from the response
+              var url = response.url;  // Assuming the server sends the URL containing 'rfid_id'
+              
+              // Parse the URL and get the 'rfid_id' from the query string
+              var urlParams = new URLSearchParams(new URL(url).search);
+              var rfid_id = urlParams.get('rfid_id');
+              //console.log('Captured RFID ID:', rfid_id);  // Debugging
 
+              // If rfid_id exists, proceed to check it
+              //alert(rfid_id)
+              if (rfid_id != 'None') {
+                  checkRFID(rfid_id);  // Call the function to check the RFID
+              } else {
+                  alert('No RFID ID found in the request URL.');
+                  console.error('No RFID ID found in the URL.');
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('Error:', error);
+              return;
+          }
+      });
+  }
+  
   $(document).ready(function() {
-    // Call captureRFID periodically or when required (for example, every 5 seconds)
-    setInterval(captureRFID, 5000); // Adjust the interval as needed
+      // Call captureRFID periodically or when required (for example, every 5 seconds)
+      setInterval(captureRFID, 5000); // Adjust the interval as needed
   });
 </script>
+  
+
+<style>
+  /* Ensure responsiveness for smaller screens */
+  @media (max-width: 768px) {
+    .navbar-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+    .navbar-search {
+      flex-direction: column;
+    }
+    .navbar-inner .nav {
+      display: block;
+    }
+  }
+
+  .btn:hover {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    transform: scale(1.05);
+  }
+</style>
