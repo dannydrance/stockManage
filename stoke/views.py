@@ -48,6 +48,7 @@ def create_account(request):
 
 def home(request):
     """Homepage view."""
+    #send_daily_report()
     products = Product.objects.all()  # Query all products
     
     # Handle category filter
@@ -133,7 +134,7 @@ def send_daily_report():
     # Get products that are about to expire in the next 7 days
     soon_expired_products = Product.objects.filter(
         expired_on__gt=today, 
-        expired_on__lt=today + timedelta(days=7)
+        expired_on__lt=today + timedelta(days=30)
     ).order_by('expired_on')
 
     # Format the email content
@@ -159,7 +160,7 @@ def send_daily_report():
     for product in expired_products:
         email_body += f"- {product.name}: Expired on {product.expired_on}\n"
     
-    email_body += "\nProducts Expiring Soon (within 7 days):\n"
+    email_body += "\nProducts Expiring Soon (within 30 days):\n"
     
     for product in soon_expired_products:
         email_body += f"- {product.name}: Expiring on {product.expired_on}\n"
