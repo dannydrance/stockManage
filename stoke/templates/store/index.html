@@ -277,26 +277,26 @@
                   <div class="dashboard-body-header">
                     <!-- Total Sold Products -->
                     <div class="dashboard-item">
-                      <h5 class="item-title">Total Sold Products</h5>
-                      <p class="item-value">{{ total_sold }}</p>
+                      <h5 class="item-title text-center" style="font-size: 15px;">Total Sold Products</h5>
+                      <p class="item-value" style="font-size: 12px;">{{ total_sold }}</p>
                     </div>
         
                     <!-- Most Sold Products -->
                     <div class="dashboard-item">
-                      <h5 class="item-title">Most Sold Products</h5>
+                      <h5 class="item-title text-center" style="font-size: 15px;">Most Sold Products</h5>
                       <ul class="item-list">
                         {% for product in most_sold_products %}
-                          <li class="item-list-item">{{ product.name }} - Sold: {{ product.sold_number }}</li>
+                          <li class="item-list-item" style="font-size: 12px;">{{ product.name }} - Sold: {{ product.sold_number }}</li>
                         {% endfor %}
                       </ul>
                     </div>
         
                     <!-- Products Needing Restock -->
                     <div class="dashboard-item">
-                      <h5 class="item-title">Products Needing Restock</h5>
+                      <h5 class="item-title text-center" style="font-size: 15px;">Products Needing Restock</h5>
                       <ul class="item-list">
                         {% for product in restock_products %}
-                          <li class="item-list-item">{{ product.name }} - Stock: {{ product.product_number }}</li>
+                          <li class="item-list-item" style="font-size: 12px;">{{ product.name }} - Stock: {{ product.product_number }}</li>
                         {% endfor %}
                       </ul>
                     </div>
@@ -313,11 +313,11 @@
                   <div class="dashboard-body-header">
                     <!-- Expired Products -->
                     <div class="dashboard-item">
-                      <h5 class="item-title">Expired Products</h5>
+                      <h5 class="item-title text-center" style="font-size: 15px;">Expired Products</h5>
                       <ul class="item-list">
                         {% for product in expired_products %}
                           {% if product.expired_on %}
-                            <li class="item-list-item">Expired on: {{ product.expired_on }} - {{ product.name }}</li>
+                            <li class="item-list-item" style="font-size: 12px;">Expired on: {{ product.expired_on }} - {{ product.name }}</li>
                           {% endif %}
                         {% endfor %}
                       </ul>
@@ -325,10 +325,10 @@
         
                     <!-- Soon Expired Products -->
                     <div class="dashboard-item">
-                      <h5 class="item-title">Products Expiring Soon</h5>
+                      <h5 class="item-title text-center" style="font-size: 15px;">Products Expiring Soon</h5>
                       <ul class="item-list">
                         {% for product in soon_expired_products %}
-                          <li class="item-list-item">Expiring on: {{ product.expired_on }} - {{ product.name }}</li>
+                          <li class="item-list-item" style="font-size: 12px;">Expiring on: {{ product.expired_on }} - {{ product.name }}</li>
                         {% endfor %}
                       </ul>
                     </div>

@@ -92,7 +92,7 @@ def home(request):
     
     # 4. Expired products or soon-to-expire
     expired_products = Product.objects.filter(expired_on__lt=datetime.now()).order_by('expired_on')  # Expired products
-    soon_expired_products = Product.objects.filter(expired_on__gt=datetime.now(), expired_on__lt=datetime.now() + timedelta(days=7)).order_by('expired_on')  # Expiring within 7 days
+    soon_expired_products = Product.objects.filter(expired_on__gt=datetime.now(), expired_on__lt=datetime.now() + timedelta(days=30)).order_by('expired_on')  # Expiring within 7 days
     
     # Pagination setup
     paginator = Paginator(products, 10)  # Show 10 products per page
