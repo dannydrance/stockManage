@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-7u!*2kzmw&zu60st*s__gu@88-pxihvurac00#2s8!qeonltm6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*'] 
 
 
 # Application definition
@@ -39,7 +40,21 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "stoke",
+    'django_celery_beat',
 ]
+
+# settings.py
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as the message broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# For periodic tasks
+CELERY_BEAT_SCHEDULE = {
+    'send-daily-email': {
+        'task': 'emails.tasks.send_daily_email',
+        'schedule': crontab(minute=35, hour=14),  # Run every day at 9:00 AM
+    },
+}
 
 ASGI_APPLICATION = "gisele.asgi.application"
 
@@ -142,5 +157,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lilianekamaliza790@gmail.com'  # Your Gmail address
 EMAIL_HOST_PASSWORD = 'tqnc eyle mmxz ovrk'  # Gmail App Password (explained below)
+DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
 
 

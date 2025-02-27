@@ -168,7 +168,7 @@ def send_daily_report():
     send_mail(
         email_subject,
         email_body,
-        'hakizayezudaniel@gmail.com',  # Sender's email
+        'lilianekamaliza790@gmail.com',  # Sender's email
         ['hakizayezudaniel@gmail.com'],  # Recipient's email
         fail_silently=False,
     )
