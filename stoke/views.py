@@ -4,8 +4,11 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db.models import Q
+from django.db.models import F, Sum
+from django.core.mail import send_mail
+from django.utils import timezone
 from .models import Product  # Import your Product model
 
 #========================================================================================================#
@@ -51,14 +54,12 @@ def home(request):
     category = request.GET.get('cateSelect', 'All')
     if category != 'All':
         products = products.filter(category=category)  # Filter by category
-    #elif category == 'All':
-        #products = Product.objects.all()  # Query all products 
-
+    
     # Handle search filter
     search_term = request.GET.get('searchBox', '')
     if search_term:
         products = products.filter(Q(name__icontains=search_term) | Q(card_id__icontains=search_term))  # Adjust the search fields if needed
-
+    
     # Handle sorting
     sort_by = request.GET.get('sortSelect', '')
     if sort_by:
@@ -68,34 +69,109 @@ def home(request):
             products = products.order_by('-product_number')  # Sort by product_number (descending)
         elif sort_by == 'Expired Date':
             products = products.order_by('expired_on')  # Sort by expired date (ascending)
-        #elif sort_by == 'Sort By':
-            #products = Product.objects.all()  # Query all products
-            
+    
     # Calculate days left for each product
     for product in products:
         if product.expired_on:
-            if isinstance(product.expired_on, str):
-                expired_on = datetime.strptime(product.expired_on, "%Y-%m-%d")
-            else:
-                expired_on = product.expired_on
-
+            expired_on = datetime.strptime(product.expired_on, "%Y-%m-%d")
             today = datetime.now()
             product.days_left = (expired_on - today).days
         else:
             product.days_left = None
 
+    # Add some custom logic to calculate product metrics:
+    
+    # 1. Total number of sold products
+    total_sold = products.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Sum of sold_number (default to 0 if none)
+    
+    # 2. Get 5 most sold products
+    most_sold_products = Product.objects.all().order_by('-sold_number')[:5]
+    
+    # 3. Products that need to be restocked
+    restock_products = Product.objects.filter(product_number__lte=F('restock_threshold')).order_by('product_number')
+    
+    # 4. Expired products or soon-to-expire
+    expired_products = Product.objects.filter(expired_on__lt=datetime.now()).order_by('expired_on')  # Expired products
+    soon_expired_products = Product.objects.filter(expired_on__gt=datetime.now(), expired_on__lt=datetime.now() + timedelta(days=7)).order_by('expired_on')  # Expiring within 7 days
+    
     # Pagination setup
     paginator = Paginator(products, 10)  # Show 10 products per page
     page_number = request.GET.get('page')
     product_page = paginator.get_page(page_number)
-
+    
     return render(request, 'store/index.html', {
         'title': 'Home',
         'product_page': product_page,
         'category': category,
         'search_term': search_term,
         'sort_by': sort_by,
+        'total_sold': total_sold,
+        'most_sold_products': most_sold_products,
+        'restock_products': restock_products,
+        'expired_products': expired_products,
+        'soon_expired_products': soon_expired_products,
     })
+
+#========================================================================================================#
+
+def send_daily_report():
+    # Get today's date
+    today = timezone.now().date()
+
+    # Gather total number of sold products
+    total_sold = Product.objects.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Default to 0 if no data
+
+    # Get the top 5 most sold products
+    most_sold_products = Product.objects.all().order_by('-sold_number')[:5]
+
+    # Products that need to be restocked based on last consumption
+    restock_products = Product.objects.filter(product_number__lte=F('restock_threshold')).order_by('product_number')
+
+    # Get expired products (expired today or before today)
+    expired_products = Product.objects.filter(expired_on__lt=today).order_by('expired_on')
+
+    # Get products that are about to expire in the next 7 days
+    soon_expired_products = Product.objects.filter(
+        expired_on__gt=today, 
+        expired_on__lt=today + timedelta(days=7)
+    ).order_by('expired_on')
+
+    # Format the email content
+    email_subject = f"Daily Product Report - {today}"
+    email_body = f"""
+    Daily Product Report for {today}
+    
+    Total Sold Products: {total_sold}
+    
+    Most Sold Products (Top 5):
+    """
+    
+    for product in most_sold_products:
+        email_body += f"- {product.name}: {product.sold_number} sold\n"
+    
+    email_body += "\nProducts Needing Restock:\n"
+    
+    for product in restock_products:
+        email_body += f"- {product.name}: Current stock: {product.product_number}, Needs restock: {product.restock_threshold - product.product_number}\n"
+    
+    email_body += "\nExpired Products:\n"
+    
+    for product in expired_products:
+        email_body += f"- {product.name}: Expired on {product.expired_on}\n"
+    
+    email_body += "\nProducts Expiring Soon (within 7 days):\n"
+    
+    for product in soon_expired_products:
+        email_body += f"- {product.name}: Expiring on {product.expired_on}\n"
+    
+    # Send the email
+    send_mail(
+        email_subject,
+        email_body,
+        'hakizayezudaniel@gmail.com',  # Sender's email
+        ['hakizayezudaniel@gmail.com'],  # Recipient's email
+        fail_silently=False,
+    )
 
 #========================================================================================================#
 

@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
+#'django_extensions', python manage.py graph_models -a -o myapp_models.png
 INSTALLED_APPS = [
     "channels",
     "django.contrib.admin",
@@ -134,3 +134,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+

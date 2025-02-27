@@ -101,6 +101,16 @@
     margin-bottom: 30px;
   }
 
+  /* Margin between dashoard Section and Products */
+  .dashoard-2{
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    margin-left: 30px;
+    margin-bottom: 10px;
+  }
+
   /* Pagination Styles */
   .pagination {
     display: flex;
@@ -178,32 +188,113 @@
       <!-- Sidebar Section -->
       {% include "store/include/sidebar.html" %}
       
-      <!-- Search and Category Filters -->
-      <div class="pull-right search-container">
-        <form class="form-inline navbar-search" method="GET" action="#">
-          {% csrf_token %}
-          <div class="btn-group">
-            <p class="btn">Category</p>
-            <select id="cateSelect" name="cateSelect" class="form-control text-center">
-              <option value="All" {% if category == 'All' %}selected{% endif %}>All</option>
-              <option value="Bakery" {% if category == 'Bakery' %}selected{% endif %}>Bakery</option>
-              <option value="Dairy" {% if category == 'Dairy' %}selected{% endif %}>Dairy</option>
-              <option value="Meat" {% if category == 'Meat' %}selected{% endif %}>Meat</option>
-              <option value="Seafood" {% if category == 'Seafood' %}selected{% endif %}>Seafood</option>
-              <option value="Canned goods" {% if category == 'Canned goods' %}selected{% endif %}>Canned goods</option>
-              <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
-            </select>
-      
-            <select id="sortSelect" name="sortSelect" class="form-control text-center">
-              <option value="Sort By" {% if sort_by == 'Sort By' %}selected{% endif %}>Sort By</option>
-              <option value="Name" {% if sort_by == 'Name' %}selected{% endif %}>Name</option>
-              <option value="Size" {% if sort_by == 'Size' %}selected{% endif %}>Size</option>
-              <option value="Expired Date" {% if sort_by == 'Expired Date' %}selected{% endif %}>Expired Date</option>
-            </select>
-      
-            <input id="searchBox" name="searchBox" class="form-control" type="text" placeholder="Search..." value="{{ search_term }}" />
+      <div class="row">
+        <!-- Dashboard -->
+        <div class="pull-left col-md-4 dashboard-2">
+          <div class="dashboard-header text-center">
+            <h2>Dashboard</h2>
           </div>
-        </form>
+          <div class="dashboard-body">
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-5">
+                <div class="dashboard-body-header">
+                  
+                  <!-- Total Sold Products -->
+                  <div class="dashboard-item">
+                    <h5>Total Sold Products</h5>
+                    <p>{{ total_sold }}</p>
+                  </div>
+        
+                  <!-- Most Sold Products -->
+                  <div class="dashboard-item">
+                    <h5>Most Sold Products</h5>
+                    <ul>
+                      {% for product in most_sold_products %}
+                        <li>{{ product.name }} - Sold: {{ product.sold_number }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+        
+                  <!-- Products Needing Restock -->
+                  <div class="dashboard-item">
+                    <h5>Products Needing Restock</h5>
+                    <ul>
+                      {% for product in restock_products %}
+                        <li>
+                          {{ product.name }} - Stock: {{ product.product_number }}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+        
+              <!-- Spacer Column (Optional) -->
+              <div class="col-md-2">
+                <div class="dashboard-body-header text-center">
+                  <h4>$</h4>
+                </div>
+              </div>
+        
+              <!-- Right Column -->
+              <div class="col-md-5">
+                <div class="dashboard-body-header">
+                  
+                  <!-- Expired Products -->
+                  <div class="dashboard-item">
+                    <h5>Expired Products</h5>
+                    <ul>
+                      {% for product in expired_products %}
+                        {% if product.expired_on %}
+                          <li>{{ product.name }} - Expired on: {{ product.expired_on }}</li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+        
+                  <!-- Soon Expired Products -->
+                  <div class="dashboard-item">
+                    <h5>Products Expiring Soon</h5>
+                    <ul>
+                      {% for product in soon_expired_products %}
+                        <li>{{ product.name }} - Expiring on: {{ product.expired_on }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>        
+
+        <!-- Search and Category Filters -->
+        <div class="pull-right col-md-7 search-container">
+          <form class="form-inline navbar-search" method="GET" action="#">
+            {% csrf_token %}
+            <div class="btn-group">
+              <p class="btn">Category</p>
+              <select id="cateSelect" name="cateSelect" class="form-control text-center">
+                <option value="All" {% if category == 'All' %}selected{% endif %}>All</option>
+                <option value="Bakery" {% if category == 'Bakery' %}selected{% endif %}>Bakery</option>
+                <option value="Dairy" {% if category == 'Dairy' %}selected{% endif %}>Dairy</option>
+                <option value="Meat" {% if category == 'Meat' %}selected{% endif %}>Meat</option>
+                <option value="Seafood" {% if category == 'Seafood' %}selected{% endif %}>Seafood</option>
+                <option value="Canned goods" {% if category == 'Canned goods' %}selected{% endif %}>Canned goods</option>
+                <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
+              </select>
+        
+              <select id="sortSelect" name="sortSelect" class="form-control text-center">
+                <option value="Sort By" {% if sort_by == 'Sort By' %}selected{% endif %}>Sort By</option>
+                <option value="Name" {% if sort_by == 'Name' %}selected{% endif %}>Name</option>
+                <option value="Size" {% if sort_by == 'Size' %}selected{% endif %}>Size</option>
+                <option value="Expired Date" {% if sort_by == 'Expired Date' %}selected{% endif %}>Expired Date</option>
+              </select>
+        
+              <input id="searchBox" name="searchBox" class="form-control" type="text" placeholder="Search..." value="{{ search_term }}" />
+            </div>
+          </form>
+        </div>
       </div>
 
       <script>
