@@ -103,7 +103,7 @@
 
   /* Margin between dashoard Section and Products */
   .dashoard-2{
-    font-size: 14px;
+    font-size: 4px;
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #007bff;
@@ -181,6 +181,80 @@
   }
 </style>
 
+<!-- Add CSS Styling -->
+<style>
+  .dashboard-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .dashboard-title {
+    font-size: 24px;
+    color: #343a40;
+  }
+
+  .dashboard-body {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .dashboard-item {
+    margin-bottom: 20px;
+  }
+
+  .item-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #495057;
+  }
+
+  .item-value, .item-list-item {
+    font-size: 16px;
+    color: #6c757d;
+  }
+
+  .item-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .item-list-item {
+    margin-bottom: 8px;
+  }
+
+  .currency-symbol {
+    font-size: 32px;
+    color: #28a745;
+  }
+
+  .btn-category {
+    font-size: 16px;
+    color: #007bff;
+  }
+
+  .form-control {
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .search-box {
+    width: 250px;
+  }
+
+  .search-container {
+    margin-top: 20px;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+</style>
+
 <!-- Main Body Content -->
 <div id="mainBody">
   <div class="container">
@@ -190,91 +264,93 @@
       
       <div class="row">
         <!-- Dashboard -->
-        <div class="pull-left col-md-4 dashboard-2">
-          <div class="dashboard-header text-center">
-            <h2>Dashboard</h2>
-          </div>
-          <div class="dashboard-body">
-            <div class="row">
-              <!-- Left Column -->
-              <div class="col-md-5">
-                <div class="dashboard-body-header">
-                  
-                  <!-- Total Sold Products -->
-                  <div class="dashboard-item">
-                    <h5>Total Sold Products</h5>
-                    <p>{{ total_sold }}</p>
-                  </div>
-        
-                  <!-- Most Sold Products -->
-                  <div class="dashboard-item">
-                    <h5>Most Sold Products</h5>
-                    <ul>
-                      {% for product in most_sold_products %}
-                        <li>{{ product.name }} - Sold: {{ product.sold_number }}</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-        
-                  <!-- Products Needing Restock -->
-                  <div class="dashboard-item">
-                    <h5>Products Needing Restock</h5>
-                    <ul>
-                      {% for product in restock_products %}
-                        <li>
-                          {{ product.name }} - Stock: {{ product.product_number }}
-                        </li>
-                      {% endfor %}
-                    </ul>
+        {% if user.is_authenticated %}
+        <div class="col-md-5"> 
+          <div class="dashboard-container">
+            <div class="dashboard-header text-center">
+              <h2 class="dashboard-title">Dashboard</h2>
+            </div>
+            <div class="dashboard-body">
+              <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-5">
+                  <div class="dashboard-body-header">
+                    
+                    <!-- Total Sold Products -->
+                    <div class="dashboard-item">
+                      <h5 class="item-title">Total Sold Products</h5>
+                      <p class="item-value">{{ total_sold }}</p>
+                    </div>
+      
+                    <!-- Most Sold Products -->
+                    <div class="dashboard-item">
+                      <h5 class="item-title">Most Sold Products</h5>
+                      <ul class="item-list">
+                        {% for product in most_sold_products %}
+                          <li class="item-list-item">{{ product.name }} - Sold: {{ product.sold_number }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+      
+                    <!-- Products Needing Restock -->
+                    <div class="dashboard-item">
+                      <h5 class="item-title">Products Needing Restock</h5>
+                      <ul class="item-list">
+                        {% for product in restock_products %}
+                          <li class="item-list-item">{{ product.name }} - Stock: {{ product.product_number }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-        
-              <!-- Spacer Column (Optional) -->
-              <div class="col-md-2">
-                <div class="dashboard-body-header text-center">
-                  <h4>$</h4>
-                </div>
-              </div>
-        
-              <!-- Right Column -->
-              <div class="col-md-5">
-                <div class="dashboard-body-header">
-                  
-                  <!-- Expired Products -->
-                  <div class="dashboard-item">
-                    <h5>Expired Products</h5>
-                    <ul>
-                      {% for product in expired_products %}
-                        {% if product.expired_on %}
-                          <li>{{ product.name }} - Expired on: {{ product.expired_on }}</li>
-                        {% endif %}
-                      {% endfor %}
-                    </ul>
+      
+                <!-- Spacer Column (Optional) -->
+                <div class="col-md-2 text-center">
+                  <div class="currency-header">
+                    <h4 class="currency-symbol">$</h4>
                   </div>
-        
-                  <!-- Soon Expired Products -->
-                  <div class="dashboard-item">
-                    <h5>Products Expiring Soon</h5>
-                    <ul>
-                      {% for product in soon_expired_products %}
-                        <li>{{ product.name }} - Expiring on: {{ product.expired_on }}</li>
-                      {% endfor %}
-                    </ul>
+                </div>
+      
+                <!-- Right Column -->
+                <div class="col-md-5">
+                  <div class="dashboard-body-header">
+                    
+                    <!-- Expired Products -->
+                    <div class="dashboard-item">
+                      <h5 class="item-title">Expired Products</h5>
+                      <ul class="item-list">
+                        {% for product in expired_products %}
+                          {% if product.expired_on %}
+                            <li class="item-list-item">Expired on: {{ product.expired_on }} - {{ product.name }}</li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+      
+                    <!-- Soon Expired Products -->
+                    <div class="dashboard-item">
+                      <h5 class="item-title">Products Expiring Soon</h5>
+                      <ul class="item-list">
+                        {% for product in soon_expired_products %}
+                          <li class="item-list-item">Expiring on: {{ product.expired_on }} - {{ product.name }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>        
-
+        </div>
+        {% endif %}
+        
         <!-- Search and Category Filters -->
-        <div class="pull-right col-md-7 search-container">
+        <div class="col-md-7 search-container">
           <form class="form-inline navbar-search" method="GET" action="#">
             {% csrf_token %}
             <div class="btn-group">
-              <p class="btn">Category</p>
-              <select id="cateSelect" name="cateSelect" class="form-control text-center">
+              <p class="btn btn-category">Category</p>
+              <select id="cateSelect" name="cateSelect" class="form-control">
                 <option value="All" {% if category == 'All' %}selected{% endif %}>All</option>
                 <option value="Bakery" {% if category == 'Bakery' %}selected{% endif %}>Bakery</option>
                 <option value="Dairy" {% if category == 'Dairy' %}selected{% endif %}>Dairy</option>
@@ -283,20 +359,20 @@
                 <option value="Canned goods" {% if category == 'Canned goods' %}selected{% endif %}>Canned goods</option>
                 <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
               </select>
-        
-              <select id="sortSelect" name="sortSelect" class="form-control text-center">
+      
+              <select id="sortSelect" name="sortSelect" class="form-control">
                 <option value="Sort By" {% if sort_by == 'Sort By' %}selected{% endif %}>Sort By</option>
                 <option value="Name" {% if sort_by == 'Name' %}selected{% endif %}>Name</option>
                 <option value="Size" {% if sort_by == 'Size' %}selected{% endif %}>Size</option>
                 <option value="Expired Date" {% if sort_by == 'Expired Date' %}selected{% endif %}>Expired Date</option>
               </select>
-        
-              <input id="searchBox" name="searchBox" class="form-control" type="text" placeholder="Search..." value="{{ search_term }}" />
+      
+              <input id="searchBox" name="searchBox" class="form-control search-box" type="text" placeholder="Search..." value="{{ search_term }}" />
             </div>
           </form>
         </div>
       </div>
-
+      
       <script>
         $(document).ready(function() {
           // Trigger form submit when category or sort option is changed
@@ -312,6 +388,7 @@
           });
         });
       </script>
+
     </div>
 
     <div class="">
