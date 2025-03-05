@@ -10,8 +10,8 @@ from django.db.models import F, Sum
 from django.core.mail import send_mail
 from django.utils import timezone
 from .models import Product  # Import your Product model
-from apscheduler.schedulers.blocking import BlockingScheduler
-from datetime import datetime
+'''from apscheduler.schedulers.blocking import BlockingScheduler
+from datetime import datetime'''
 
 
 #========================================================================================================#
@@ -53,11 +53,11 @@ def home(request):
     """Homepage view."""
     #send_daily_report()
     # Create a scheduler instance
-    scheduler = BlockingScheduler()
+    #scheduler = BlockingScheduler()
     # Schedule the job to run at a specific time every day (e.g., 9 AM)
-    scheduler.add_job(send_daily_report, 'cron', hour=6, minute=40)
+    #scheduler.add_job(send_daily_report, 'cron', hour=6, minute=40)
     # Start the scheduler
-    scheduler.start()
+    #scheduler.start()
 
     products = Product.objects.all()  # Query all products
     
