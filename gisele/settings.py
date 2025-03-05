@@ -146,7 +146,7 @@ EMAIL_HOST_PASSWORD = 'tqnc eyle mmxz ovrk'  # Gmail App Password (explained bel
 DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
 
 # settings.py
-# Celery Configuration
+# Celery Configuration   redis://default:oZzVBmTxKaySOJmqbXcguPfrtIWobHtN@shuttle.proxy.rlwy.net:25096
 CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379'  # Use Redis as a message broker
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
