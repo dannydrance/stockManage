@@ -17,6 +17,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 #from stoke.tasks import send_daily_email
+from django.utils import timezone
+
 
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
@@ -27,6 +29,6 @@ from celery.schedules import crontab
 app.conf.beat_schedule = {
     'send_daily_email_task': {
         'task': 'stoke.tasks.send_daily_email',
-        'schedule': crontab(minute=55, hour=6),  # Sends the email every day at 8 AM
+        'schedule': crontab(minute=0, hour=8),  # Sends the email every day at 8 AM
     },
 }

@@ -45,14 +45,7 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = "gisele.asgi.application"
 
-JAZZMIN_SETTINGS = {
-    "site_title": "My Admin",
-    "site_header": "My Site Admin",
-    "site_brand": "My Brand",
-    "welcome_sign": "Welcome to the Admin Panel!",
-    "copyright": "My Company",
-    # More customization options available
-}
+
 
 CHANNEL_LAYERS = {
     "default": {
@@ -158,6 +151,8 @@ DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
 # settings.py
 # Celery Configuration   redis://default:oZzVBmTxKaySOJmqbXcguPfrtIWobHtN@shuttle.proxy.rlwy.net:25096
 #CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379'  # Use Redis as a message broker
+CELERY_TIMEZONE = 'UTC'  # Set the timezone for periodic tasks
+CELERY_ENABLE_UTC = True
 CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Redis broker URL from Render
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
