@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 #'django_extensions', python manage.py graph_models -a -o myapp_models.png
 INSTALLED_APPS = [
+    'jazzmin',
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,11 +45,20 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = "gisele.asgi.application"
 
+JAZZMIN_SETTINGS = {
+    "site_title": "My Admin",
+    "site_header": "My Site Admin",
+    "site_brand": "My Brand",
+    "welcome_sign": "Welcome to the Admin Panel!",
+    "copyright": "My Company",
+    # More customization options available
+}
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 8000)],  # Replace with your Redis host and port
+            "hosts": [("red-cv08qkq3esus73e6kghg", 6379)],  # Replace with your Redis host and port
         },
     },
 }
@@ -147,7 +157,8 @@ DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
 
 # settings.py
 # Celery Configuration   redis://default:oZzVBmTxKaySOJmqbXcguPfrtIWobHtN@shuttle.proxy.rlwy.net:25096
-CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379'  # Use Redis as a message broker
+#CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379'  # Use Redis as a message broker
+CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Redis broker URL from Render
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Same Redis instance for results
