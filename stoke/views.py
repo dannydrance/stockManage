@@ -314,6 +314,7 @@ def get_product_details(request):
                     "rfid_id": product.card_id,
                     "deviceName": product.name,
                     "product_expired": product.expired_on,
+                    "product_number": product.product_number
                     #"product_expired": product.expired_on.strftime("%Y-%m-%d") if product.expired_on else "N/A",
                     
                 })
