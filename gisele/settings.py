@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 #'django_extensions', python manage.py graph_models -a -o myapp_models.png
 INSTALLED_APPS = [
+    'jazzmin',
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,14 +46,14 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = "gisele.asgi.application"
 
-'''JAZZMIN_SETTINGS = {
+JAZZMIN_SETTINGS = {
     "site_title": "My Admin",
-    "site_header": "My Site Admin",
-    "site_brand": "My Brand",
+    "site_header": "Stock Manager Admin Panel",
+    "site_brand": "Stock Manager",
     "welcome_sign": "Welcome to the Admin Panel!",
-    "copyright": "My Company",
+    "copyright": "Stock Manager",
     # More customization options available
-}'''
+}
 
 CHANNEL_LAYERS = {
     "default": {
