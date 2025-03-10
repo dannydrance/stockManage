@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-7u!*2kzmw&zu60st*s__gu@88-pxihvurac00#2s8!qeonltm6"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "stoke",
     'django_celery_beat',
+    'crispy_forms',
 ]
 
 ASGI_APPLICATION = "gisele.asgi.application"
@@ -140,12 +141,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 
+# Directory where static files will be collected during production (for use with `collectstatic`)
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production use only
+
+# Additional directories to look for static files during development
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Assuming you have a 'static' directory where your app's static files are located
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -170,3 +175,5 @@ CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Redis broker UR
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Same Redis instance for results
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'  # Or 'bootstrap4'
