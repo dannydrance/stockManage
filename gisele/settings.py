@@ -66,6 +66,7 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -151,6 +152,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production use only
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Assuming you have a 'static' directory where your app's static files are located
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
