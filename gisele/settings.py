@@ -184,4 +184,10 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'  # Same Redis instance for results
 
+'''CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Or another broker like RabbitMQ
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Or another result backend if needed
+CELERY_TIMEZONE = 'UTC'  # Or your desired timezone
+'''
 CRISPY_TEMPLATE_PACK = 'bootstrap5'  # Or 'bootstrap4'
