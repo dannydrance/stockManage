@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'jazzmin',
     "channels",
+    'django_celery_results',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -60,7 +61,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("red-cv08qkq3esus73e6kghg", 6379)],  # Replace with your Redis host and port
+            "hosts": [("red-cv08qkq3esus73e6kghg", 6379)],  # Replace with your Redis host and port  
         },
     },
 }
@@ -166,17 +167,21 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lilianekamaliza790@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'tqnc eyle mmxz ovrk'  # Gmail App Password (explained below)
-DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
+EMAIL_HOST_PASSWORD = 'aknk gued ijva aeeo'  # Gmail App Password (explained below)
+#DEFAULT_FROM_EMAIL = 'hakizayezudaniel@gmail.com'
 
 # settings.py
 # Celery Configuration   redis://default:oZzVBmTxKaySOJmqbXcguPfrtIWobHtN@shuttle.proxy.rlwy.net:25096
 #CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379'  # Use Redis as a message broker
-CELERY_TIMEZONE = 'UTC'  # Set the timezone for periodic tasks
-CELERY_ENABLE_UTC = True
+
+# Celery Configuration Options
+CELERY_TIMEZONE = "Africa/Kigali"
+CELERY_TASK_TRACK_STARTED = True
+
+
 CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Redis broker URL from Render
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Same Redis instance for results
+CELERY_RESULT_BACKEND = 'django-db'  # Same Redis instance for results
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'  # Or 'bootstrap4'

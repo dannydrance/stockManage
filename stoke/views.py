@@ -51,13 +51,8 @@ def create_account(request):
 
 def home(request):
     """Homepage view."""
+    
     #send_daily_report()
-    # Create a scheduler instance
-    #scheduler = BlockingScheduler()
-    # Schedule the job to run at a specific time every day (e.g., 9 AM)
-    #scheduler.add_job(send_daily_report, 'cron', hour=6, minute=40)
-    # Start the scheduler
-    #scheduler.start()
 
     products = Product.objects.all()  # Query all products
     
@@ -124,6 +119,7 @@ def home(request):
     })
 
 #========================================================================================================#
+from django.core.mail import BadHeaderError
 
 def send_daily_report():
     # Get today's date
@@ -175,14 +171,20 @@ def send_daily_report():
     for product in soon_expired_products:
         email_body += f"- {product.name}: Expiring on {product.expired_on}\n"
     
-    # Send the email
-    send_mail(
-        email_subject,
-        email_body,
-        'lilianekamaliza790@gmail.com',  # Sender's email
-        ['hakizayezudaniel@gmail.com'],  # Recipient's email
-        fail_silently=False,
-    )
+    try:
+        # Send the email
+        send_mail(
+            email_subject,
+            email_body,
+            'lilianekamaliza790@gmail.com',  # Sender's email
+            ['hakizayezudaniel@gmail.com'],  # Recipient's email
+            fail_silently=False,
+        )
+        print("Email sent successfully.")
+    except BadHeaderError:
+        print("Invalid header found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 #========================================================================================================#
 

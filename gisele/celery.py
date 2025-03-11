@@ -29,6 +29,6 @@ from celery.schedules import crontab
 app.conf.beat_schedule = {
     'send_daily_email_task': {
         'task': 'stoke.tasks.send_daily_email',
-        'schedule': crontab(minute=0, hour=8),  # Sends the email every day at 8 AM
+        'schedule': crontab(minute=3, hour=20),  # Sends the email every day at 8 AM
     },
 }

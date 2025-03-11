@@ -7,8 +7,8 @@ class Product(models.Model):
     name = models.CharField(max_length=150)
     produced_at = models.CharField(max_length=100)
     expired_on = models.CharField(max_length=100)
-    product_number = models.IntegerField()  # Current stock
-    sold_number = models.IntegerField(default=0)  # Number of sold products
+    product_number = models.IntegerField()  # Current stock 
+    sold_number = models.IntegerField(default=0)  # Number of sold products 
     last_consumed_at = models.DateTimeField(null=True, blank=True)  # When product was last consumed
     restock_threshold = models.IntegerField(default=10)  # When product needs restocking
 
