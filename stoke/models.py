@@ -13,4 +13,4 @@ class Product(models.Model):
     restock_threshold = models.IntegerField(default=10)  # When product needs restocking
 
     def __str__(self):
-        return self.name
+        return f'{self.name} and {self.card_id}'
