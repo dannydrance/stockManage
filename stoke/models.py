@@ -14,3 +14,11 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name} and {self.card_id}'
+    
+class SoledProduct(models.Model):
+    card_id = models.CharField(max_length=100)
+    name = models.CharField(max_length=150)
+    sold_number = models.IntegerField(default=0)  # Number of sold products 
+
+    def __str__(self):
+        return f'{self.name} and {self.card_id}'

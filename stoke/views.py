@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.db.models import F, Sum
 from django.core.mail import send_mail
 from django.utils import timezone
-from .models import Product  # Import your Product model
+from .models import Product, SoledProduct # Import your Product model
 '''from apscheduler.schedulers.blocking import BlockingScheduler
 from datetime import datetime'''
 
@@ -52,7 +52,7 @@ def create_account(request):
 def home(request):
     """Homepage view."""
     
-    #send_daily_report()
+    send_daily_report()
 
     products = Product.objects.all()  # Query all products
     
@@ -86,12 +86,12 @@ def home(request):
             product.days_left = None
 
     # Add some custom logic to calculate product metrics:
-    
+    sold_product = SoledProduct.objects.all()
     # 1. Total number of sold products
-    total_sold = products.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Sum of sold_number (default to 0 if none)
+    total_sold = sold_product.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Sum of sold_number (default to 0 if none)
     
     # 2. Get 5 most sold products
-    most_sold_products = Product.objects.all().order_by('-sold_number')[:5]
+    most_sold_products = SoledProduct.objects.all().order_by('-sold_number')[:5]
     
     # 3. Products that need to be restocked
     restock_products = Product.objects.filter(product_number__lte=F('restock_threshold')).order_by('product_number')
@@ -126,10 +126,10 @@ def send_daily_report():
     today = timezone.now().date()
 
     # Gather total number of sold products
-    total_sold = Product.objects.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Default to 0 if no data
+    total_sold = SoledProduct.objects.aggregate(Sum('sold_number'))['sold_number__sum'] or 0  # Default to 0 if no data
 
     # Get the top 5 most sold products
-    most_sold_products = Product.objects.all().order_by('-sold_number')[:5]
+    most_sold_products = SoledProduct.objects.all().order_by('-sold_number')[:5]
 
     # Products that need to be restocked based on last consumption
     restock_products = Product.objects.filter(product_number__lte=F('restock_threshold')).order_by('product_number')
@@ -137,47 +137,75 @@ def send_daily_report():
     # Get expired products (expired today or before today)
     expired_products = Product.objects.filter(expired_on__lt=today).order_by('expired_on')
 
-    # Get products that are about to expire in the next 7 days
+    # Get products that are about to expire in the next 30 days
     soon_expired_products = Product.objects.filter(
         expired_on__gt=today, 
         expired_on__lt=today + timedelta(days=30)
     ).order_by('expired_on')
 
-    # Format the email content
+    # Format the email content with HTML
     email_subject = f"Daily Product Report - {today}"
+    
     email_body = f"""
-    Daily Product Report for {today}
-    
-    Total Sold Products: {total_sold}
-    
-    Most Sold Products (Top 5):
+    <html>
+    <body>
+        <h2>Daily Product Report for {today}</h2>
+        
+        <p><strong>Total Sold Products:</strong> {total_sold}</p>
+        
+        <h3>Top 5 Most Sold Products:</h3>
+        <ul>
     """
     
     for product in most_sold_products:
-        email_body += f"- {product.name}: {product.sold_number} sold\n"
+        email_body += f"<li>{product.name}: {product.sold_number} units sold</li>"
     
-    email_body += "\nProducts Needing Restock:\n"
+    email_body += "</ul>"
+
+    email_body += """
+        <h3>Products Needing Restock:</h3>
+        <ul>
+    """
     
     for product in restock_products:
-        email_body += f"- {product.name}: Current stock: {product.product_number}, Needs restock: {product.restock_threshold - product.product_number}\n"
+        email_body += f"<li>{product.name}: Current stock: {product.product_number}, Needs restock: {product.restock_threshold - product.product_number} units</li>"
     
-    email_body += "\nExpired Products:\n"
+    email_body += "</ul>"
+
+    email_body += """
+        <h3>Expired Products:</h3>
+        <ul>
+    """
     
     for product in expired_products:
-        email_body += f"- {product.name}: Expired on {product.expired_on}\n"
+        email_body += f"<li>{product.name}: Expired on {product.expired_on}</li>"
     
-    email_body += "\nProducts Expiring Soon (within 30 days):\n"
+    email_body += "</ul>"
+
+    email_body += """
+        <h3>Products Expiring Soon (within 30 days):</h3>
+        <ul>
+    """
     
     for product in soon_expired_products:
-        email_body += f"- {product.name}: Expiring on {product.expired_on}\n"
+        email_body += f"<li>{product.name}: Expiring on {product.expired_on}</li>"
     
+    email_body += """
+        </ul>
+        <p>Kind regards,</p>
+        <p>Your Stock Management Reporting System</p>
+    </body>
+    </html>
+    """
+
     try:
-        # Send the email
+        # Send the email with HTML content
         send_mail(
             email_subject,
-            email_body,
+            '',  # Body of the email is passed in the html format
             'lilianekamaliza790@gmail.com',  # Sender's email
-            ['hakizayezudaniel@gmail.com'],  # Recipient's email
+            ['hakizayezudaniel@gmail.com', 'gigigenie99@gmail.com'],  # Recipient's email
+            html_message=email_body,  # The HTML body of the email
             fail_silently=False,
         )
         print("Email sent successfully.")
@@ -241,16 +269,57 @@ def remove_product(request):
                 # If the quantity to remove is greater than what's in stock, return an error message
                 messages.error(request, f"Error: Stock is low. Only {product.product_number} available.")
             elif quantity_to_remove < product.product_number:
+               
+                # Try to get the SoldProduct entry, if it exists
+                sold_product, created = SoledProduct.objects.get_or_create(card_id=product.card_id)
+                if created:
+                    # If this is a new product in SoldProduct, create the new entry
+                    sold_product.sold_number = quantity_to_remove
+                    sold_product.name = product.name
+                    sold_product.save()
+                    #messages.success(request, f"{quantity_to_remove} of {product_name} added to sold products!")
+
+                else:
+                    # If the product is already in SoldProduct, update the sold number
+                    sold_product.sold_number += quantity_to_remove
+                    sold_product.save()
+
+                    # Move this row to the "last" position (if we are ordering by created_at or another field)
+                    # Assuming `created_at` exists on SoldProduct and we want to move the product to the latest position
+                    sold_product.refresh_from_db()  # Ensure we're working with the latest DB state
+                    sold_product.save()
+
+                    #messages.success(request, f"Updated sold quantity for {product_name} to {sold_product.sold_number}!")
+
                 # If the quantity to remove is less than the stock, subtract it from the stock
                 product.product_number -= quantity_to_remove
                 product.save()
                 messages.success(request, f"{quantity_to_remove} of {product_name} removed successfully!")
             else:  # If the quantity to remove is exactly equal to the stock
+
+                # Try to get the SoldProduct entry, if it exists
+                sold_product, created = SoledProduct.objects.get_or_create(card_id=product.card_id)
+                if created:
+                    # If this is a new product in SoldProduct, create the new entry
+                    sold_product.sold_number = quantity_to_remove
+                    sold_product.name = product.name
+                    sold_product.save()
+
+                else:
+                    # If the product is already in SoldProduct, update the sold number
+                    sold_product.sold_number += quantity_to_remove
+                    sold_product.save()
+                    
+                    # Move this row to the "last" position (if we are ordering by created_at or another field)
+                    # Assuming `created_at` exists on SoldProduct and we want to move the product to the latest position
+                    sold_product.refresh_from_db()  # Ensure we're working with the latest DB state
+                    sold_product.save()
+
                 # Delete the product if the quantity is exactly the same
                 product.delete()
                 messages.success(request, f"All of {product_name} removed successfully!")
         else:
-            messages.error(request, f"No roduct of this ID: {product.card_id}")
+            messages.error(request, f"No product of this ID: {product.card_id}")
 
         # Redirect back to the store page or wherever needed
         return redirect('home')  # Make sure you update this with the correct URL name
