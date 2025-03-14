@@ -53,8 +53,6 @@ def trigger_daily_report(request):
     return HttpResponse("Daily report sent!")
 def home(request):
     """Homepage view."""
-    
-    send_daily_report()
 
     products = Product.objects.all()  # Query all products
     
