@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "stoke",
     'django_celery_beat',
-    'crispy_forms',
+    'crispy_forms'
 ]
 
 ASGI_APPLICATION = "gisele.asgi.application"
+
 
 JAZZMIN_SETTINGS = {
     "site_title": "My Admin",

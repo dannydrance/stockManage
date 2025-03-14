@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 from django.db.models import Q
@@ -48,7 +48,9 @@ def create_account(request):
     """Placeholder for account creation logic."""
     return render(request, 'store/index.html', {'title': 'Create Account'})
 #========================================================================================================#
-
+def trigger_daily_report(request):
+    send_daily_report()  # Call your existing function
+    return HttpResponse("Daily report sent!")
 def home(request):
     """Homepage view."""
     

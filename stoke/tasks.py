@@ -1,6 +1,5 @@
-from celery import shared_task
-from .views import send_daily_report
+from django_q.tasks import schedule
+from stoke.views import send_daily_report
 
-@shared_task
-def send_daily_email():
+def send_daily_report_task():
     send_daily_report()
