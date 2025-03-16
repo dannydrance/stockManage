@@ -51,9 +51,9 @@ def create_account(request):
 def trigger_daily_report(request):
     send_daily_report()  # Call your existing function
     return HttpResponse("Daily report sent!")
+
 def home(request):
     """Homepage view."""
-
     products = Product.objects.all()  # Query all products
     
     # Handle category filter
@@ -100,6 +100,13 @@ def home(request):
     expired_products = Product.objects.filter(expired_on__lt=datetime.now()).order_by('expired_on')  # Expired products
     soon_expired_products = Product.objects.filter(expired_on__gt=datetime.now(), expired_on__lt=datetime.now() + timedelta(days=30)).order_by('expired_on')  # Expiring within 7 days
     
+    # Prepare stock and sold data for chart
+    stock_data = [product.product_number for product in products]
+    product_sold = SoledProduct.objects.all()
+    sold_data = [product_sol.sold_number for product_sol in product_sold]
+    product_labels = [product.name for product in products]
+    product_labels_sold = [product_sol.name for product_sol in product_sold]
+
     # Pagination setup
     paginator = Paginator(products, 10)  # Show 10 products per page
     page_number = request.GET.get('page')
@@ -116,6 +123,10 @@ def home(request):
         'restock_products': restock_products,
         'expired_products': expired_products,
         'soon_expired_products': soon_expired_products,
+        'stock_data': stock_data,
+        'sold_data': sold_data,
+        'product_labels': product_labels,
+        'product_labels_sold': product_labels_sold,
     })
 
 #========================================================================================================#

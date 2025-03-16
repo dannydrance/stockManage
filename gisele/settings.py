@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "stoke",
     'django_celery_beat',
-    'crispy_forms'
     'crispy_forms',
 ]
 

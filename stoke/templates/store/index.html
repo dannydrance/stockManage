@@ -1,269 +1,159 @@
 {% extends "store/layout/main.html" %}
 {% load static %}
 {% block content %}
-{% include "store/include/slide.html" %}
+  {% include "store/include/slide.html" %}
 
-<!-- Styling for the Page -->
-<style>
-  /* General Thumbnail Styles */
-  .thumbnail p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: all 0.3s ease-in-out;
-    padding: 10px;
-    margin: 0;
-    background-color: #f7f7f7;
-    border-radius: 5px;
-  }
-
-  .thumbnail p:hover {
-    overflow: visible;
-    white-space: normal;
-    background-color: #ecf0f1;
-  }
-
-  .thumbnail img {
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-
-  /* Caption Styling */
-  .caption {
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-
-  .caption h5 {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .caption p {
-    font-size: 0.9em;
-    color: #777;
-    margin-bottom: 15px;
-  }
-
-  /* Button Styles */
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-    transition: background-color 0.3s ease-in-out;
-    padding: 8px 15px;
-    font-size: 14px;
-    border-radius: 5px;
-  }
-
-  .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-  }
-
-  .btn-center {
-    display: block;
-    margin: 15px auto;
-    text-align: center;
-  }
-
-  /* Form and Input Styles */
-  .form-control {
-    padding: 8px 15px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-  }
-
-  .form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  }
-
-  /* Category and Search Filters Styling */
-  .btn-group p {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    background-color: #f8f9fa;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-
-  /* Margin between Search Section and Products */
-  .search-container {
-    margin-bottom: 30px;
-  }
-
-  /* Margin between dashoard Section and Products */
-  .dashoard-2{
-    font-size: 4px;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #007bff;
-    margin-left: 30px;
-    margin-bottom: 10px;
-  }
-
-  /* Pagination Styles */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-
-  .pagination .page-item {
-    margin: 0 5px;
-  }
-
-  .pagination .page-link {
-    border-radius: 50%;
-    padding: 8px 15px;
-    margin: 0 3px;
-    color: #007bff;
-    border: 1px solid #007bff;
-    transition: all 0.3s ease;
-  }
-
-  .pagination .page-link:hover {
-    background-color: #0056b3;
-    color: white;
-    cursor: pointer;
-  }
-
-  .pagination .active .page-link {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .pagination .disabled .page-link {
-    color: #ddd;
-    pointer-events: none;
-  }
-
-  .pagination .page-link:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  }
-
-  .pagination .page-item a {
-    font-size: 16px;
-  }
-
-  /* Responsive Layout Adjustments for Smaller Screens */
-  @media (max-width: 768px) {
-    .thumbnails {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+  <!-- Page-specific Styling -->
+  <style>
+    /* General Thumbnail Styles */
+    .thumbnail p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: all 0.3s ease-in-out;
+      padding: 10px;
+      margin: 0;
+      background-color: #f7f7f7;
+      border-radius: 5px;
     }
 
-    .span3 {
-      width: 48%;
+    .thumbnail p:hover {
+      overflow: visible;
+      white-space: normal;
+      background-color: #ecf0f1;
+    }
+
+    .thumbnail img {
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    /* Caption Styling */
+    .caption {
+      padding: 15px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .caption h5 {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .caption p {
+      font-size: 0.9em;
+      color: #777;
       margin-bottom: 15px;
     }
 
-    .span3 img {
-      width: 100%;
-      height: auto;
+    /* Button Styles */
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      transition: background-color 0.3s ease-in-out;
+      padding: 8px 15px;
+      font-size: 14px;
+      border-radius: 5px;
     }
 
-    .btn-group {
-      width: 100%;
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .btn-center {
+      display: block;
+      margin: 15px auto;
       text-align: center;
     }
-  }
-</style>
 
-<!-- Add CSS Styling -->
-<style>
-  .dashboard-container {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-  }
+    /* Form and Input Styles */
+    .form-control {
+      padding: 8px 15px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
 
-  .dashboard-title {
-    font-size: 24px;
-    color: #343a40;
-  }
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
 
-  .dashboard-body {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+    /* Pagination Styles */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
 
-  .dashboard-item {
-    margin-bottom: 20px;
-  }
+    .pagination .page-item {
+      margin: 0 5px;
+    }
 
-  .item-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #495057;
-  }
+    .pagination .page-link {
+      border-radius: 50%;
+      padding: 8px 15px;
+      margin: 0 3px;
+      color: #007bff;
+      border: 1px solid #007bff;
+      transition: all 0.3s ease;
+    }
 
-  .item-value, .item-list-item {
-    font-size: 16px;
-    color: #6c757d;
-  }
+    .pagination .page-link:hover {
+      background-color: #0056b3;
+      color: white;
+      cursor: pointer;
+    }
 
-  .item-list {
-    list-style: none;
-    padding: 0;
-  }
+    .pagination .active .page-link {
+      background-color: #007bff;
+      color: white;
+    }
 
-  .item-list-item {
-    margin-bottom: 8px;
-  }
+    .pagination .disabled .page-link {
+      color: #ddd;
+      pointer-events: none;
+    }
 
-  .currency-symbol {
-    font-size: 32px;
-    color: #28a745;
-  }
+    /* Responsive Layout Adjustments for Smaller Screens */
+    @media (max-width: 768px) {
+      .thumbnails {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
 
-  .btn-category {
-    font-size: 16px;
-    color: #007bff;
-  }
+      .span3 {
+        width: 48%;
+        margin-bottom: 15px;
+      }
 
-  .form-control {
-    border-radius: 4px;
-    font-size: 14px;
-  }
+      .span3 img {
+        width: 100%;
+        height: auto;
+      }
 
-  .search-box {
-    width: 250px;
-  }
+      .btn-group {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
 
-  .search-container {
-    margin-top: 20px;
-  }
-
-  .btn-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-</style>
-
-<!-- Main Body Content -->
-<div id="mainBody">
-  <div class="container">
-    <div class="row">
-      <!-- Sidebar Section -->
-      {% include "store/include/sidebar.html" %}
-      
+  <!-- Main Body Content -->
+  <div id="mainBody">
+    <div class="container">
       <div class="row">
-        <!-- Dashboard -->
+        <!-- Sidebar Section -->
+        {% include "store/include/sidebar.html" %}
+        
+        <!-- Dashboard Section -->
         {% if user.is_authenticated %}
         <div class="col-md-5">
           <div class="dashboard-container">
@@ -271,7 +161,18 @@
               <h2 class="dashboard-title">Dashboard</h2>
             </div>
             <div class="dashboard-body">
-              <!-- Initially hidden content -->
+              <!-- Stock Chart (Bar Chart) -->
+              <div class="row">
+                <div class="col-md-6">
+                  <canvas id="stockChart"></canvas>
+                </div>
+                <!-- Sold Products Pie Chart -->
+                <div class="col-md-6">
+                  <canvas id="soldChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Initially Hidden Content -->
               <div class="row" id="dashboard-details" style="display: none;">
                 <div class="col-md-5">
                   <div class="dashboard-body-header">
@@ -280,7 +181,6 @@
                       <h5 class="item-title text-center" style="font-size: 15px;">Total Sold Products</h5>
                       <p class="item-value" style="font-size: 12px;">{{ total_sold }}</p>
                     </div>
-        
                     <!-- Most Sold Products -->
                     <div class="dashboard-item">
                       <h5 class="item-title text-center" style="font-size: 15px;">Most Sold Products</h5>
@@ -290,7 +190,6 @@
                         {% endfor %}
                       </ul>
                     </div>
-        
                     <!-- Products Needing Restock -->
                     <div class="dashboard-item">
                       <h5 class="item-title text-center" style="font-size: 15px;">Products Needing Restock</h5>
@@ -302,13 +201,11 @@
                     </div>
                   </div>
                 </div>
-        
                 <div class="col-md-2 text-center">
                   <div class="currency-header">
                     <h4 class="currency-symbol">$</h4>
                   </div>
                 </div>
-        
                 <div class="col-md-5">
                   <div class="dashboard-body-header">
                     <!-- Expired Products -->
@@ -322,7 +219,6 @@
                         {% endfor %}
                       </ul>
                     </div>
-        
                     <!-- Soon Expired Products -->
                     <div class="dashboard-item">
                       <h5 class="item-title text-center" style="font-size: 15px;">Products Expiring Soon</h5>
@@ -335,13 +231,14 @@
                   </div>
                 </div>
               </div>
+
               <!-- Toggle Button -->
               <div class="text-center">
                 <button id="toggle-button" class="btn btn-primary" onclick="toggleDashboard()">Show Detail</button>
               </div>
             </div>
           </div>
-        </div>        
+        </div>
         {% endif %}
 
         <script>
@@ -350,7 +247,7 @@
             var dashboardDetails = document.getElementById('dashboard-details');
             var toggleButton = document.getElementById('toggle-button');
             
-            // Toggle the visibility of the dashboard details
+            // Toggle visibility of dashboard details
             if (dashboardDetails.style.display === "none") {
               dashboardDetails.style.display = "block";
               toggleButton.innerText = "Show Less"; // Change button text to 'Show Less'
@@ -359,9 +256,64 @@
               toggleButton.innerText = "Show Detail"; // Change button text back to 'Show All'
             }
           }
+
+          // Initialize the Stock Bar Chart
+          var ctxStock = document.getElementById('stockChart').getContext('2d');
+          var stockChart = new Chart(ctxStock, {
+            type: 'bar',
+            data: {
+              labels: {{ product_labels|safe }},
+              datasets: [{
+                label: 'Current Stock',
+                data: {{ stock_data|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+
+          // Initialize Sold Products Pie Chart
+          var ctxSold = document.getElementById('soldChart').getContext('2d');
+          var soldChart = new Chart(ctxSold, {
+            type: 'pie',
+            data: {
+              labels: {{ product_labels_sold|safe }},
+              datasets: [{
+                label: 'Sold Products',
+                data: {{ sold_data|safe }},
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                borderColor: '#fff',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,  // Ensures the chart resizes correctly on different screen sizes
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(tooltipItem) {
+                      return tooltipItem.label + ': ' + tooltipItem.raw;
+                    }
+                  }
+                }
+              },
+              aspectRatio: 1,  // Ensures the pie chart remains circular by maintaining aspect ratio
+            }
+          });
         </script>
-        
-        <!-- Search and Category Filters -->
+
+        <!-- Search Filters -->
         <div class="col-md-7 search-container">
           <form class="form-inline navbar-search" method="GET" action="#">
             {% csrf_token %}
@@ -376,43 +328,40 @@
                 <option value="Canned goods" {% if category == 'Canned goods' %}selected{% endif %}>Canned goods</option>
                 <option value="Beverages" {% if category == 'Beverages' %}selected{% endif %}>Beverages</option>
               </select>
-      
+        
               <select id="sortSelect" name="sortSelect" class="form-control">
                 <option value="Sort By" {% if sort_by == 'Sort By' %}selected{% endif %}>Sort By</option>
                 <option value="Name" {% if sort_by == 'Name' %}selected{% endif %}>Name</option>
                 <option value="Size" {% if sort_by == 'Size' %}selected{% endif %}>Size</option>
                 <option value="Expired Date" {% if sort_by == 'Expired Date' %}selected{% endif %}>Expired Date</option>
               </select>
-      
+        
               <input id="searchBox" name="searchBox" class="form-control search-box" type="text" placeholder="Search..." value="{{ search_term }}" />
             </div>
           </form>
         </div>
+
+        <script>
+          $(document).ready(function() {
+            // Submit the form when category or sort option is changed
+            $('#cateSelect, #sortSelect').on('change', function() {
+              $('form').submit();
+            });
+
+            // Submit form when user presses enter on the search box
+            $('#searchBox').on('keypress', function(e) {
+              if (e.which === 13) {  // Enter key
+                $('form').submit();
+              }
+            });
+          });
+        </script>
+
       </div>
-      
-      <script>
-        $(document).ready(function() {
-          // Trigger form submit when category or sort option is changed
-          $('#cateSelect, #sortSelect').on('change', function() {
-            $('form').submit(); // Submit the form automatically when selection changes
-          });
 
-          // Trigger form submit when user types in the search box and presses enter
-          $('#searchBox').on('keypress', function(e) {
-            if (e.which === 13) {  // Enter key
-              $('form').submit(); // Submit the form when enter is pressed
-            }
-          });
-        });
-      </script>
-
-    </div>
-
-    <div class="">
-      <!-- Featured Products Section -->
       <div class="span9">
         <h4>Latest Products</h4>
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered text-center">
           <thead class="thead-light bg-info text-white">
             <tr>
               <th scope="col">#</th>
@@ -421,7 +370,7 @@
               <th scope="col">Produced Date</th>
               <th scope="col">Expired Date</th>
               <th scope="col">Product Quantity</th>
-              <th scope="col">Day To Expired</th>
+              <th scope="col">Days to Expiry</th>
             </tr>
           </thead>
           <tbody>
@@ -433,32 +382,22 @@
                 <td>{{ product.produced_at }}</td>
                 <td>{{ product.expired_on }}</td>
                 <td>{{ product.product_number }}</td>
-                <td>
-                  {% if product.expired_on %}
-                    {% if product.days_left %}
-                      {% if product.days_left <= 0 %}
-                        <span class="bg-danger text-white p-1">{{ product.days_left }} days left</span> <!-- Red background for expired -->
-                      {% elif product.days_left < 5 %}
-                        <span class="bg-warning text-dark p-1">{{ product.days_left }} days left</span> <!-- Yellow background for less than 5 days -->
-                      {% else %}
-                        <span class="bg-success text-white p-1">{{ product.days_left }} days left</span> <!-- Green background for more than 5 days -->
-                      {% endif %}
-                    {% else %}
-                      <span class="text-muted">Expired</span>
-                    {% endif %}
-                  {% else %}
-                    <span class="text-muted">N/A</span>
+                <td class="
+                  {% if product.days_left <= 3 %}
+                    bg-danger text-white  <!-- Red for days <= 3 -->
+                  {% elif product.days_left <= 10 %}
+                    bg-warning text-dark  <!-- Yellow for days <= 10 -->
+                  {% elif product.days_left > 10 %}
+                    bg-success text-white  <!-- Green for days > 10 -->
                   {% endif %}
-                </td>                
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="7" class="text-center text-muted">No products found</td>
+                ">
+                  {{ product.days_left }}
+                </td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
-
+        
         <!-- Pagination Section -->
         <!-- Pagination Section -->
         <div id="small" class="well well-small">
@@ -518,24 +457,6 @@
       </div>
     </div>
   </div>
-  <br class="clr"/>
 </div>
 
-{% endblock content %}
-
-{% block script %}
-<script>
-  $(document).ready(function() {
-    console.log("Pagination and autocomplete script is executing.");
-
-    // Initialize Autocomplete (you already have this in your code)
-    $("#srchFld1").autocomplete({
-      source: ['python', 'react', 'java', 'jax', 'pythang'],
-      minLength: 2
-    });
-  });
-</script>
 {% endblock %}
-
-<!-- Placeholder for any other messages -->
-<section id="messages" x-swap-oob="" x-swap="innerHTML"></section>
