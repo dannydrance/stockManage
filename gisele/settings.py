@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "stoke",
     'django_celery_beat',
     'crispy_forms'
+    'crispy_forms',
 ]
 
 ASGI_APPLICATION = "gisele.asgi.application"
@@ -144,7 +145,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# Static files (CSS, JavaScript, Images)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
 
 # Directory where static files will be collected during production (for use with `collectstatic`)
@@ -152,7 +153,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # For production use only
 
 # Additional directories to look for static files during development
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # Assuming you have a 'static' directory where your app's static files are located
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -183,12 +184,4 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BROKER_URL = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Redis broker URL from Render
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'django-db'  # Same Redis instance for results
-
-'''CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Or another broker like RabbitMQ
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Or another result backend if needed
-CELERY_TIMEZONE = 'UTC'  # Or your desired timezone
-'''
-CRISPY_TEMPLATE_PACK = 'bootstrap5'  # Or 'bootstrap4'
+CELERY_RESULT_BACKEND = 'redis://red-cv08qkq3esus73e6kghg:6379/0'  # Same Redis instance for results
